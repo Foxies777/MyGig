@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
-function App() {
+function Map() {
   const [location, setLocation] = useState();
 
   function getLocationInfo(latitude, longitude) {
@@ -62,10 +62,9 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="Map">
       {location ? <>Your location: {location}</> : null}
     </div>
   );
 }
-
-export default App;
+export default Map

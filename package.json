@@ -13,6 +13,7 @@
     "axios": "^1.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-push-notification": "^1.5.3",
     "yarn": "^1.22.19"
   },
   "devDependencies": {
