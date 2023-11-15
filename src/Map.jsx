@@ -4,7 +4,6 @@ const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
 function Map() {
   const [location, setLocation] = useState();
-
   function getLocationInfo(latitude, longitude) {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${APIkey}`;
     console.log(fetch(url));
@@ -47,10 +46,8 @@ function Map() {
         .then(function (result) {
           console.log(result);
           if (result.state === "granted") {
-            //If granted then you can directly call your function here
             navigator.geolocation.getCurrentPosition(success, errors, options);
           } else if (result.state === "prompt") {
-            //If prompt then the user will be asked to give permission
             navigator.geolocation.getCurrentPosition(success, errors, options);
           } else if (result.state === "denied") {
             //If denied then you have to show instructions to enable location
@@ -60,7 +57,6 @@ function Map() {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
-
   return (
     <div className="Map">
       {location ? <>Your location: {location}</> : null}
