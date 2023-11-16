@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
-
+import Notification from  './Notification';
 const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
 function Map() {
   const [location, setLocation] = useState();
   function getLocationInfo(latitude, longitude) {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${APIkey}`;
-    console.log(fetch(url));
     fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         console.log(data);
         if (data.status.code === 200) {
-          console.log("results:", data.results);
           setLocation(data.results[0].formatted);
+          
         } else {
           console.log("Reverse geolocation request failed.");
         }
       })
-      .catch((error) => console.error(error));
+      .catch(error => console.error(error));
   }
-  var options = {
+  const options = {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 0,
@@ -43,14 +42,14 @@ function Map() {
     if (navigator.geolocation) {
       navigator.permissions
         .query({ name: "geolocation" })
-        .then(function (result) {
+        .then(result => {
           console.log(result);
           if (result.state === "granted") {
             navigator.geolocation.getCurrentPosition(success, errors, options);
           } else if (result.state === "prompt") {
             navigator.geolocation.getCurrentPosition(success, errors, options);
           } else if (result.state === "denied") {
-            //If denied then you have to show instructions to enable location
+            //
           }
         });
     } else {
@@ -59,6 +58,7 @@ function Map() {
   }, []);
   return (
     <div className="Map">
+      <Notification message={location}/>
       {location ? <>Your location: {location}</> : null}
     </div>
   );

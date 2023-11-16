@@ -1,27 +1,18 @@
-import React from 'react';
-import Map from './Map';
-import ReactDOMServer from 'react-dom/server';
 import addNotification from 'react-push-notification';
-import { Notifications } from 'react-push-notification';
-function Notification() {
-    function buttonOnClick() {
-        const mapElement = <Map location={location ? { location } : null} />;
-        const mapString = ReactDOMServer.renderToString(mapElement);
+
+function Notification(props) {
+    if (props.message !== undefined) {
+        let message = props.message.split(' ')
+        console.log(message);
         addNotification({
             title: 'Вы находитесь на',
-            message: mapString,
+            message: message,
             native: true
-        })
-        console.log(mapString);
-    };
-    return (
-        <div className="Notification">
-            <Notifications />
-            <h1>Hey Geek!</h1>
-            <button onClick={buttonOnClick}>
-                Push Notification
-            </button>
-        </div>
-    );
+        });
+        // Здесь возвращайте null (или другой компонент), если вы не хотите ничего рендерить
+        return null;
+    }
+
 }
-export default Notification
+
+export default Notification;
