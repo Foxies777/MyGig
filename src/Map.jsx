@@ -1,29 +1,33 @@
-import { useEffect, useState } from "react";
-import Notification from  './Notification';
+import React, { useEffect, useState } from "react";
+import Notification from "./Notification";
 const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
 function Map() {
   const [location, setLocation] = useState();
+  const [showNotification, setShowNotification] = useState(false);
+
   function getLocationInfo(latitude, longitude) {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${APIkey}`;
     fetch(url)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log(data);
         if (data.status.code === 200) {
           setLocation(data.results[0].formatted);
-          
+          setShowNotification(true);
         } else {
           console.log("Reverse geolocation request failed.");
         }
       })
-      .catch(error => console.error(error));
+      .catch((error) => console.error(error));
   }
+
   const options = {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 0,
   };
+
   function success(pos) {
     var crd = pos.coords;
     console.log("Your current position is:");
@@ -42,7 +46,7 @@ function Map() {
     if (navigator.geolocation) {
       navigator.permissions
         .query({ name: "geolocation" })
-        .then(result => {
+        .then((result) => {
           console.log(result);
           if (result.state === "granted") {
             navigator.geolocation.getCurrentPosition(success, errors, options);
@@ -56,11 +60,13 @@ function Map() {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
+
   return (
     <div className="Map">
-      <Notification message={location}/>
       {location ? <>Your location: {location}</> : null}
+      {showNotification && <Notification message={location} />}
     </div>
   );
 }
-export default Map
+
+export default Map;
