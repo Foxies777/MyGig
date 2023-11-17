@@ -15,9 +15,9 @@ function Notification(props) {
     return (
         <div className="Notification">
             <Notifications />
+
         </div>
     )
 }
-
 
 export default Notification;
