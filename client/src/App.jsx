@@ -1,13 +1,13 @@
-import './App.css'
+import { BrowserRouter } from 'react-router-dom'
 import React from 'react'
-import Map from './components/Map'
+import AppRouter from './components/AppRouter'
 
 function App() {
 
   return (
-    <>
-      <Map/>
-    </>
+    <BrowserRouter>
+      <AppRouter/>
+    </BrowserRouter>
     
   )
 }
