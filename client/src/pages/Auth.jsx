@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Button, Container, Form } from 'react-bootstrap'
+import React, { useContext, useState } from 'react';
 import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../utils/consts';
 import { useLocation, NavLink } from 'react-router-dom';
 import { login, registration } from '../http/userAPI';
-function Auth() {
+import { observer } from 'mobx-react-lite';
+
+import { Button, Container, Form } from 'react-bootstrap'
+import { Context } from '../main';
+
+
+const Auth = observer(() => {
+  const {user} = useContext(Context)
   const location = useLocation()
   const isLogin = location.pathname === LOGIN_ROUTE
 
@@ -12,13 +18,14 @@ function Auth() {
   const [password, setPassword] = useState('')
 
   const click = async () => {
+    let data
     if (isLogin) {
-      const response = await login()
+      data = await login(login, password)
     } else {
-      const response = await registration(login, email, password)
-      console.log(response);
-
+      data = await registration(login, email, password)
     }
+    user.setUser(user)
+    user.setIsAuth(true)
   }
 
   return (
@@ -57,6 +64,6 @@ function Auth() {
       }
     </Container>
   );
-}
+})
 
 export default Auth;
