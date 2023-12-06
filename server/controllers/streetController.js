@@ -1,4 +1,4 @@
-const {Street} = require('../models/models')
+const { Street } = require('../models/models')
 
 class StreetController {
     async getAllStreets(req, res) {

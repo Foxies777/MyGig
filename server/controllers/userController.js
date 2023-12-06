@@ -7,7 +7,7 @@ const { User, Review } = require('../models/models')
 const generateJWT = (id, login, email, role) => {
     return jwt.sign({ id, login, email, role },
         process.env.SECRET_KEY,
-        { expiresIn: '24h' }
+        { expiresIn: '200h' }
     )
 }
 
@@ -44,7 +44,6 @@ class UserController {
 
     }
     async check(req, res, next) {
-        res.json({message: "All Right!!!"})
         const token = generateJWT(req.user.id, req.user.login, req.user.email, req.user.role)
         return res.json({ token })
     }

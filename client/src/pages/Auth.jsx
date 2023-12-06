@@ -27,7 +27,7 @@ const Auth = observer(() => {
       }
       user.setUser(user);
       user.setIsAuth(true);
-      navigate();
+      navigate(MAP_ROUTE);
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||

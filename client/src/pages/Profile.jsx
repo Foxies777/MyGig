@@ -1,8 +1,12 @@
 import React from 'react'
+import Navigation from '../components/Navigation'
 
 const Profile = () => {
   return (
-    <div>Profile</div>
+    <div>
+      <h1>Профиль</h1>
+      <Navigation />
+    </div>
   )
 }
 
