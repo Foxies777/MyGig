@@ -1,8 +1,12 @@
 import React from 'react'
-
+import Map from '../components/Map'
+import Navigation from '../components/Navigation'
 const PageMap = () => {
   return (
-    <div>PageMap</div>
+    <div>
+      <Map/>
+      <Navigation/>
+    </div>
   )
 }
 

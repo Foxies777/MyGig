@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Notification from "./Notification";
+// import Notification from "./Notification";
 const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
 function Map() {
@@ -61,7 +61,7 @@ function Map() {
   return (
     <div className="Map">
       {location ? <>Your location: {location}</> : null}
-      <Notification message={location} />
+      {/* <Notification message={location} /> */}
     </div>
   );
 }

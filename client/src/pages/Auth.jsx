@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../utils/consts';
-import { useLocation, NavLink } from 'react-router-dom';
+import { LOGIN_ROUTE, MAP_ROUTE, REGISTRATION_ROUTE } from '../utils/consts';
+import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { login, registration } from '../http/userAPI';
 import { observer } from 'mobx-react-lite';
 
@@ -9,40 +9,61 @@ import { Context } from '../main';
 
 
 const Auth = observer(() => {
-  const {user} = useContext(Context)
+  const { user } = useContext(Context)
   const location = useLocation()
+  const navigate = useNavigate()
   const isLogin = location.pathname === LOGIN_ROUTE
-
-  const [login, setLogin] = useState('')
+  const [logins, setLogins] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const click = async () => {
-    let data
-    if (isLogin) {
-      data = await login(login, password)
-    } else {
-      data = await registration(login, email, password)
+    try {
+      let data;
+      if (isLogin) {
+        data = await login(logins, password);
+      } else {
+        data = await registration(logins, email, password);
+      }
+      user.setUser(user);
+      user.setIsAuth(true);
+      navigate();
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Произошла ошибка';
+
+      alert(errorMessage);
     }
-    user.setUser(user)
-    user.setIsAuth(true)
-  }
+  };
+
+
 
   return (
-    <Container style={{ width: "100%", height: "100vh" }} 
-    className='d-flex justify-content-around align-items-center flex-column p-4'>
+    <Container style={{ width: "100%", height: "100vh" }}
+      className='d-flex justify-content-around align-items-center flex-column p-4'>
       <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2>
       <Form className='d-flex flex-column gap-5 w-100'>
         {isLogin ?
           <>
-            <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }} placeholder='Логин' />
-            <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }} placeholder='Пароль' type='password' />
+            <Form.Control
+              value={logins}
+              onChange={e => setLogins(e.target.value)}
+              style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
+              placeholder='Логин' />
+            <Form.Control
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
+              placeholder='Пароль'
+              type='password' />
           </>
           :
           <>
             <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
-              value={login}
-              onChange={e => setLogin(e.target.value)}
+              value={logins}
+              onChange={e => setLogins(e.target.value)}
               placeholder='Логин' />
             <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
               value={email}
