@@ -4,28 +4,15 @@ export default class Streets {
         this._streets = [
             {
                 id: 0,
-                street: "70 лет Октября"
+                street_name: "70 лет Октября",
+                description: 'sdgfdgdfgdfd'
             },
             {
-                "id": 1,
-                "street": "70 лет Победы"
+                id: 1,
+                street: "70 лет Победы",
+                description: 'sdgfdgdfgdfd'
             },
-            {
-                id: 2,
-                street: "8 Марта"
-            },
-            {
-                id: 3,
-                street: "Аббяса Кашаева"
-            },
-            {
-                id: 4,
-                street: "Абдуллы Алиша"
-            },
-            {
-                id: 5,
-                street: "Автомобилистов"
-            }
+
         ]
 
 
