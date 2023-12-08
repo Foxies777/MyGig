@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 
 import { Button, Container, Form } from 'react-bootstrap'
 import { Context } from '../main';
+import Navigation from '../components/Navigation';
 
 
 const Auth = observer(() => {
@@ -65,8 +66,10 @@ const Auth = observer(() => {
               value={logins}
               onChange={e => setLogins(e.target.value)}
               placeholder='Логин' />
-            <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
+            <Form.Control 
+            style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
               value={email}
+              type='email'
               onChange={e => setEmail(e.target.value)}
               placeholder='Email' />
             <Form.Control style={{ border: 'none', borderBottom: '1px solid #222', outline: 'none' }}
@@ -83,6 +86,8 @@ const Auth = observer(() => {
         :
         <div><NavLink to={LOGIN_ROUTE}>Вход</NavLink></div>
       }
+
+      <Navigation />
     </Container>
   );
 })
