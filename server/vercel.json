@@ -1,5 +1,5 @@
 {
-    "versoin": 2,
+    "version": 2,
     "builds": [
         {
             "src": "*.js",
