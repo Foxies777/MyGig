@@ -6,7 +6,7 @@ export const createStreet = async (street_name, description) => {
 };
 
 export const fetchStreet = async () => {
-    const { data } = await $host.post('api/street');
+    const { data } = await $host.get('api/street');
     return data
 };
 

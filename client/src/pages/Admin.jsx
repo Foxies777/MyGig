@@ -4,6 +4,7 @@ import { Button, Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 import { createStreet } from '../http/streetAPI';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../main';
+import EditableTable from '../components/EditableTable';
 
 const Admin = () => {
   const [name, setName] = useState('');
@@ -54,9 +55,9 @@ const Admin = () => {
           >
             Выйти</Button>
         </Form>
+        <EditableTable/>
       </Container>
 
-      <Navigation />
       <Navigation />
     </div>
   );

@@ -1,19 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 export default class Streets {
     constructor() {
-        this._streets = [
-            {
-                id: 0,
-                street_name: "70 лет Октября",
-                description: 'sdgfdgdfgdfd'
-            },
-            {
-                id: 1,
-                street: "70 лет Победы",
-                description: 'sdgfdgdfgdfd'
-            },
-
-        ]
+        this._streets = []
 
 
         makeAutoObservable(this)

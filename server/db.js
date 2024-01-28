@@ -1,7 +1,4 @@
 const { Sequelize } = require('sequelize');
-const pg = require('pg');
-
-pg.defaults.ssl = true;
 
 module.exports = new Sequelize(
   process.env.DB_NAME,
@@ -11,7 +8,5 @@ module.exports = new Sequelize(
     dialect: 'postgres',
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialectModule: pg, // Явно указываем драйвер
-    ssl: true, // Включаем SSL, если это необходимо
   }
 );
