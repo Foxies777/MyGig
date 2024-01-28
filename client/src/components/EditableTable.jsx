@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
-import { Table } from "react-bootstrap";
+import { Table, Form } from "react-bootstrap";
 import { MDBInput } from "mdbreact";
 import { Context } from '../main';
 
@@ -33,17 +33,12 @@ const EditableTable = observer(() => {
 
   return (
     <div className='mt-5'>
-      <MDBInput
-        label="Поиск"
-        value={searchItem}
-        onChange={handleInputChange}
-      />
-      {/* <input
-        type="text"
-        value={searchItem}
-        onChange={handleInputChange}
-        placeholder='Поиск'
-      /> */}
+      <Form.Control 
+      type="text" 
+      placeholder="Поиск" 
+      value={searchItem}
+      onChange={handleInputChange} />
+      
       <Table striped bordered hover >
         <thead>
           <tr>
