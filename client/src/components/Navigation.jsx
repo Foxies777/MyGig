@@ -20,7 +20,7 @@ const Navigation = () => {
         }
     }, []);
     return (
-        <nav>
+        <nav style={{backgroundColor: '#fff'}}>
             {user.isAuth
                 ? (
                     userRole === 'ADMIN' ?
