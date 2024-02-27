@@ -16,7 +16,9 @@ const Street = sequelize.define('street', {
 
 const Notification = sequelize.define('notification', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-})
+    timestamp: { type: DataTypes.DATE, allowNull: false },
+});
+
 
 const Review = sequelize.define('review', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },

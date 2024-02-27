@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import Notifications from './Notifications'
 
 
 const Profile = () => {
@@ -45,6 +46,7 @@ const Profile = () => {
       <Button
         onClick={() => logOut()}>Выйти</Button>
       <Navigation />
+      <Notifications/>
     </Container>
   )
 }
