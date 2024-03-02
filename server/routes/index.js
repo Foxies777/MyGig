@@ -11,7 +11,7 @@ const ReviewCommentsRoutes = require('./ReviewCommentsRoutes')
 router.use('/user', userRuter)
 router.use('/street', streetRoutes)
 router.use('/review', reviewRoutes)
-router.use('/notification', notificationsRoutes)
+router.use('/notifications', notificationsRoutes)
 router.use('/reviewComment', ReviewCommentsRoutes)
 
 module.exports = router
