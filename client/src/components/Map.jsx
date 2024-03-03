@@ -1,5 +1,9 @@
-import React, { useEffect, useState, useCallback } from "react";
-import MobileNotifications from "./MobileNotifications";
+import React, { useEffect, useState, useCallback, useContext } from "react";
+import { jwtDecode } from 'jwt-decode'; // Убедитесь, что jwt-decode корректно импортирован
+import { createNotification } from '../http/notificationAPI';
+import { fetchStreet } from "../http/streetAPI";
+import { Context } from "../main";
+
 
 const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 
@@ -7,24 +11,60 @@ function Map() {
   const [location, setLocation] = useState();
   const [lastStreet, setLastStreet] = useState('');
 
+  const { streets } = useContext(Context)
+
+  useEffect(() => {
+    fetchStreet().then(data => streets.setStreets(data))
+  }, [])
+
+  const sendNotification = useCallback(async (streetName) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Нет токена аутентификации');
+      return;
+    }
+
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.id;
+    const cleanStreetName = streetName.split(',')[0].trim();
+    console.log(streetName);
+    console.log(cleanStreetName.split(' ')[1]);
+    try {
+      const matchingStreet = streets.streets.find(street => street.street_name === cleanStreetName.split(' ')[1]);
+      if (!matchingStreet) {
+        console.error('Улица не найдена');
+        return;
+      }
+      const streetId = matchingStreet.id;
+
+
+      // Создание уведомления
+      await createNotification(userId, streetId);
+    } catch (error) {
+      console.error('Ошибка при отправке уведомления:', error);
+    }
+  }, []);
+
+
   const getLocationInfo = useCallback((latitude, longitude) => {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${APIkey}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        if (data.status.code === 200) {
+        if (data.status.code === 200 && data.results.length > 0) {
           const currentLocation = data.results[0].formatted;
           if (currentLocation !== lastStreet) {
-            setLastStreet(currentLocation); // Обновляем улицу только если она изменилась
+            setLastStreet(currentLocation);
             setLocation(currentLocation);
-            // TODO: Сделать POST запрос на сервер для отправки уведомления, если улица изменилась
+            sendNotification(currentLocation);
           }
         } else {
           console.log("Reverse geolocation request failed.");
         }
       })
       .catch((error) => console.error(error));
-  }, [lastStreet]);
+  }, [lastStreet, sendNotification]);
+
 
   const options = {
     enableHighAccuracy: true,
@@ -33,7 +73,7 @@ function Map() {
   };
 
   function success(pos) {
-    var crd = pos.coords;
+    const crd = pos.coords;
     getLocationInfo(crd.latitude, crd.longitude);
   }
 
@@ -63,7 +103,6 @@ function Map() {
 
   return (
     <div className="Map">
-      <MobileNotifications currentStreet={location}/>
       {location ? <>Your location: {location}</> : null}
     </div>
   );

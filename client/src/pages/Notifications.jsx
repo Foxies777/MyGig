@@ -6,6 +6,8 @@ import { fetchNotification } from '../http/notificationAPI';
 import { jwtDecode } from 'jwt-decode';
 import { Container } from 'react-bootstrap';
 
+import Map from '../components/Map';
+
 const Notifications = observer(() => {
   const { notifications } = useContext(Context); // предполагаем, что `Context` предоставляет notifications
 
@@ -26,12 +28,14 @@ const Notifications = observer(() => {
     fetchNotifications();
   }, [notifications]);
 
+  const pubNotif = [...notifications.notifications].reverse();
+
   return (
     <Container>
       <h1>Уведомления о улицах</h1>
       {notifications.notifications.length > 0 ? (
         <div>
-          {notifications.notifications.map((notification, index) => (
+          {pubNotif.map((notification, index) => (
             <Container key={index}>
               <h3>{notification.streetName}</h3>
               <p>{notification.streetDescription}</p>
@@ -45,6 +49,7 @@ const Notifications = observer(() => {
         <div>Нет уведомлений.</div>
       )}
       <Navigation />
+      <Map />
     </Container>
   );
 });

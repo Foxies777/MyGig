@@ -1,68 +1,81 @@
-import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
-import { Table, Form } from "react-bootstrap";
-import { MDBInput } from "mdbreact";
+import { observer } from 'mobx-react-lite';
 import { Context } from '../main';
-
+import { MDBDataTableV5 } from 'mdbreact';
 import { fetchStreet } from '../http/streetAPI';
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
+
 const EditableTable = observer(() => {
-  const { streets } = useContext(Context)
-
-
-
+  const { streets } = useContext(Context);
 
   useEffect(() => {
-    fetchStreet().then(data => streets.setStreets(data))
-  }, [])
+    fetchStreet().then(data => streets.setStreets(data));
+  }, []);
 
-  const [searchItem, setSearchItem] = useState('')
-  const [filteredStreets, setFilteredStreets] = useState(streets.streets.map(street => street.street_name))
-  console.log(streets.streets.map(street => street.street_name));
-  const handleInputChange = (e) => {
-    const searchTerm = e.target.value
-    setSearchItem(searchTerm)
+  const [searchItem, setSearchItem] = useState('');
 
-    const filteredItems = streets.streets.filter((street) =>
-      street.street_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const datatable = {
+    columns: [
+      {
+        label: '№',
+        field: 'id',
+        sort: 'asc',
+        width: 150,
+      },
+      {
+        label: 'Название',
+        field: 'street_name',
+        sort: 'asc',
+        width: 270,
+      },
+      {
+        label: 'Описание',
+        field: 'description',
+        sort: 'asc',
+        width: 200,
+      },
+    ],
+    rows: streets.streets.map(street => ({
+      id: street.id,
+      street_name: street.street_name,
+      description: street.description,
+    })),
+  };
 
-    setFilteredStreets(filteredItems);
-  }
+  useEffect(() => {
+    if (searchItem === '') {
+      datatable.rows = streets.streets.map(street => ({
+        id: street.id,
+        street_name: street.street_name,
+        description: street.description,
+      }));
+    } else {
+      datatable.rows = streets.streets
+        .filter(street => street.street_name.toLowerCase().includes(searchItem.toLowerCase()))
+        .map(street => ({
+          id: street.id,
+          street_name: street.street_name,
+          description: street.description,
+        }));
+    }
+  }, [searchItem, streets.streets]);
 
 
   return (
     <div className='mt-5'>
-      <Form.Control 
-      type="text" 
-      placeholder="Поиск" 
-      value={searchItem}
-      onChange={handleInputChange} />
-      
-      <Table striped bordered hover >
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>Название</th>
-            <th>Описание</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStreets.map((street) => {
-            return <tr key={street.id}>
-              <td>
-                {street.id}
-              </td>
-              <td>
-                {street.street_name}
-              </td>
-              <td>
-                {street.description}
-              </td>
-            </tr>
-          })}
-        </tbody>
-      </Table>
+      <MDBDataTableV5 
+        hover 
+        entriesOptions={[5, 20, 25]} 
+        entries={5} 
+        pagesAmount={4} 
+        data={datatable} 
+        searchTop
+        searchBottom={false}
+      />
     </div>
   );
 });

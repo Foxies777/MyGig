@@ -10,7 +10,6 @@ router.get('/:userId', async (req, res) => {
     }
 
     try {
-        // Предполагая, что getUserStreetNotifications является асинхронной функцией
         const notifications = await NotificationController.getUserStreetNotifications(userId);
         res.json(notifications);
     } catch (error) {
