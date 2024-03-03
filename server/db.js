@@ -2,37 +2,35 @@ require('dotenv').config();
 
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.USER, process.env.PASSWORD, {
-  host: process.env.HOST,
+// Ensure that the necessary environment variables are set
+const databaseName = process.env.DATABASE_NAME;
+const user = process.env.USER;
+const password = process.env.PASSWORD;
+const host = process.env.HOST;
+
+if (!databaseName || !user || !password || !host) {
+  console.error('One or more environment variables are missing: DATABASE_NAME, USER, PASSWORD, HOST');
+  process.exit(1);
+}
+
+const sequelize = new Sequelize(databaseName, user, password, {
+  host: host,
   dialect: 'postgres',
   dialectModule: require('pg'),
   port: 5432,
-  logging: true, // Вы можете включить логирование, установив значение true
+  logging: console.log, // Set logging to console.log or false
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false // Важно для подключения к некоторым облачным базам данных
+      rejectUnauthorized: false // Important for connecting to some cloud databases
     }
   },
   pool: {
-    max: 5, // Максимальное количество подключений в пуле
-    min: 0, // Минимальное количество подключений в пуле
-    acquire: 30000, // Максимальное время в миллисекундах, в течение которого пул будет пытаться установить подключение перед выдачей ошибки
-    idle: 10000 // Время в миллисекундах, после которого простаивающее подключение будет закрыто
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
   }
 });
+
 module.exports = sequelize;
-// module.exports = new Sequelize(
-//   process.env.DB_NAME,
-//   process.env.DB_USER,
-//   process.env.DB_PASSWORD,
-//   {
-//     dialect: 'postgres',
-//     host: process.env.DB_HOST,
-//     port: process.env.DB_PORT,
-//   }
-// );
-
-
-
-
