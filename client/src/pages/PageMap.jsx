@@ -8,7 +8,7 @@ const PageMap = () => {
   return (
     <div>
       <YMap />
-      <MobileNotifications />
+      {/* <MobileNotifications /> */}
       <Navigation />
       
     </div>
