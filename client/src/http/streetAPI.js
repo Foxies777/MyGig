@@ -10,4 +10,12 @@ export const fetchStreet = async () => {
     return data
 };
 
+export const updateStreet = async (id, street_name, description) => {
+    const { data } = await $authhost.put(`api/street/update/${id}`, { street_name, description });
+    return data;
+};
 
+export const deleteStreet = async (id) => {
+    const { data } = await $authhost.delete(`api/street/delete/${id}`);
+    return data;
+};

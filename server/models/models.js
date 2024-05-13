@@ -17,18 +17,20 @@ const Street = sequelize.define('street', {
 const Notification = sequelize.define('notification', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     timestamp: { type: DataTypes.DATE, allowNull: false },
-});
-
-
-const Review = sequelize.define('review', {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    text_review: { type: DataTypes.STRING, allowNull: false },
-    rating: { type: DataTypes.INTEGER, defaultValue: 0 },
 })
 
-const ReviewComments = sequelize.define('reviewcomments', {
+const Quiz = sequelize.define('quiz', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    text_comment: { type: DataTypes.STRING, allowNull: false },
+    quiz: { type: DataTypes.STRING, allowNull: false },
+})
+const Question = sequelize.define('question', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    question: { type: DataTypes.STRING, allowNull: false },
+    question_description: { type: DataTypes.STRING, allowNull: false },
+})
+const Answer = sequelize.define('answer', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    answer: {type: DataTypes.STRING, allowNull: false},
 })
 
 
@@ -36,28 +38,14 @@ const ReviewComments = sequelize.define('reviewcomments', {
 User.hasMany(Notification)
 Notification.belongsTo(User)
 
-User.hasMany(Review)
-Review.belongsTo(User)
-
-User.hasMany(ReviewComments)
-ReviewComments.belongsTo(User)
 
 //Street
 Street.hasMany(Notification)
 Notification.belongsTo(Street)
 
-Street.hasMany(Review)
-Review.belongsTo(Street)
-
-//Review
-Review.hasMany(ReviewComments)
-ReviewComments.belongsTo(Review)
-
 
 module.exports = {
     User,
     Street,
-    Notification,
-    Review,
-    ReviewComments
+    Notification
 }

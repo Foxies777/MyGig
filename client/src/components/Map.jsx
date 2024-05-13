@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
-import { jwtDecode } from 'jwt-decode'; // Убедитесь, что jwt-decode корректно импортирован
+import { jwtDecode } from 'jwt-decode';
 import { createNotification } from '../http/notificationAPI';
 import { fetchStreet } from "../http/streetAPI";
 import { Context } from "../main";
@@ -37,8 +37,6 @@ function Map() {
       }
       const streetId = matchingStreet.id;
 
-
-      // Создание уведомления
       await createNotification(userId, streetId);
     } catch (error) {
       console.error('Ошибка при отправке уведомления:', error);
@@ -88,6 +86,7 @@ function Map() {
         .query({ name: "geolocation" })
         .then((result) => {
           if (result.state === "granted" || result.state === "prompt") {
+            navigator.geolocation.getCurrentPosition(success, errors, options);
             intervalId = setInterval(() => {
               navigator.geolocation.getCurrentPosition(success, errors, options);
             }, 300000); // 5 минут = 300000 миллисекунд

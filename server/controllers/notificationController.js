@@ -3,10 +3,6 @@ const { User, Notification, Street } = require('../models/models');
 class NotificationController {
     async getUserStreetNotifications(userId) {
         userId = Number(userId);
-        if (typeof userId !== 'number' || isNaN(userId)) {
-            console.error('Ошибка: ID пользователя должен быть числом');
-            return [];
-        }
         try {
             const userWithNotifications = await User.findOne({
                 where: { id: userId },

@@ -9,7 +9,7 @@ import { Container } from 'react-bootstrap';
 import Map from '../components/Map';
 
 const Notifications = observer(() => {
-  const { notifications } = useContext(Context); // предполагаем, что `Context` предоставляет notifications
+  const { notifications } = useContext(Context); 
 
   useEffect(() => {
     const fetchNotifications = async () => {

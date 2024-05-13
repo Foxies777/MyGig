@@ -3,7 +3,14 @@ const router = new Router()
 const streetController = require('../controllers/streetController')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
-router.post('/',checkRole('ADMIN'), streetController.create)
-router.get('/', streetController.getAllStreets)
+router
+    .post('/', checkRole('ADMIN'), streetController.create)
+    .get('/', streetController.getAllStreets)
+
+router
+    .put('/update/:id', checkRole('ADMIN'), streetController.update)
+
+router
+    .delete('/delete/:id', checkRole('ADMIN'), streetController.delete)
 
 module.exports = router
