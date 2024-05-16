@@ -89,7 +89,7 @@ function Map() {
             navigator.geolocation.getCurrentPosition(success, errors, options);
             intervalId = setInterval(() => {
               navigator.geolocation.getCurrentPosition(success, errors, options);
-            }, 300000); // 5 минут = 300000 миллисекунд
+            }, 300000);
           }
         });
     } else {
