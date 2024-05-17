@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { YMaps, GeolocationControl, Map, ZoomControl, Placemark } from '@pbe/react-yandex-maps';
+import StreetModal from './StreetModal'; 
+import { searchStreetsByName } from '../http/streetAPI'; 
 
 const YMap = () => {
     const [streetData, setStreetData] = useState(null);
     const [street, setStreet] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [streetInfo, setStreetInfo] = useState(null);
+
     const handleMapClick = async (e) => {
         const coords = e.get('coords');
 
@@ -16,15 +21,34 @@ const YMap = () => {
                     const street = currentLocation.split(',')[0].trim().replace(/Улица\s+/i, '');
                     
                     setStreet(street);
+                    setShowModal(true);
+                    fetchStreetInfo(street);
 
                 } else {
                     console.log("Reverse geolocation request failed.");
                 }
-            })
+            });
         
         setStreetData(data);
     };
+
+    const fetchStreetInfo = async (streetName) => {
+        try {
+            const streetInfo = await searchStreetsByName(streetName);
+            setStreetInfo(streetInfo);
+        } catch (error) {
+            console.error('Error fetching street info:', error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setStreetInfo(null);
+    };
+
     console.log(street);
+    console.log(streetInfo);
+
     return (
         <YMaps
             enterprise
@@ -54,6 +78,12 @@ const YMap = () => {
                     />
                 )}
             </Map>
+            <StreetModal
+                show={showModal}
+                onHide={handleCloseModal}
+                streetName={street}
+                streetInfo={streetInfo}
+            />
         </YMaps>
     );
 };

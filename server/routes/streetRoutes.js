@@ -13,4 +13,7 @@ router
 router
     .delete('/delete/:id', checkRole('ADMIN'), streetController.delete)
 
+router
+    .get('/search', streetController.searchByName)
+
 module.exports = router

@@ -19,3 +19,12 @@ export const deleteStreet = async (id) => {
     const { data } = await $authhost.delete(`api/street/delete/${id}`);
     return data;
 };
+
+export const searchStreetsByName = async (street_name) => {
+    const { data } = await $host.get(`api/street/search`, {
+        params: {
+            street_name
+        }
+    });
+    return data;
+};

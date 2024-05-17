@@ -55,6 +55,21 @@ class StreetController {
             return res.status(500).send(error.message);
         }
     }
+    async searchByName(req, res) {
+        try {
+            const streetName = req.query.street_name;
+            const streets = await Street.findAll({
+                where: {
+                    street_name: streetName
+                }
+            });
+            return res.status(200).json(streets);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send('Internal Server Error');
+        }
+    }
+     
 
 }
 

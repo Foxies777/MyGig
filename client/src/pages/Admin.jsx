@@ -1,18 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { Button, Container, Form, FormControl } from 'react-bootstrap';
-import { createStreet, updateStreet } from '../http/streetAPI';
+import { createStreet, updateStreet, deleteStreet } from '../http/streetAPI';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../main';
 import EditableTable from '../components/EditableTable';
 import Navigation from '../components/Navigation';
+import { observer } from 'mobx-react-lite';
 
-const Admin = () => {
+const Admin = observer(() => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [editingStreetId, setEditingStreetId] = useState(null);
 
-  const { user } = useContext(Context);
+  const { user, streets } = useContext(Context);
   const navigate = useNavigate();
 
   const handleEdit = (street) => {
@@ -29,32 +30,44 @@ const Admin = () => {
   };
 
   const logOut = () => {
-    user.setUser({})
-    user.setIsAuth(false)
-    navigate('/login')
-  }
-
-  const handleDelete = (id) => {
-    deleteStreet(id).then(() => {
-      console.log("Улица удалена");
-    }).catch(error => {
-      console.error("Ошибка при удалении улицы: ", error);
-    });
+    user.setUser({});
+    user.setIsAuth(false);
+    navigate('/login');
   };
 
-  const handleUpdate = () => {
-    updateStreet(editingStreetId, name, description).then(() => {
+  const handleDelete = async (id) => {
+    try {
+      await deleteStreet(id);
+      streets.deleteStreet(id);
+      console.log("Улица удалена");
+    } catch (error) {
+      console.error("Ошибка при удалении улицы: ", error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const updatedStreet = await updateStreet(editingStreetId, name, description);
+      streets.updateStreet(updatedStreet); // Обновляем данные улицы
       setName('');
       setDescription('');
       setEditMode(false);
-    });
+      console.log("Улица обновлена");
+    } catch (error) {
+      console.error("Ошибка при обновлении улицы: ", error);
+    }
   };
 
-  const addStreet = () => {
-    createStreet(name, description).then(() => {
+  const addStreet = async () => {
+    try {
+      const newStreet = await createStreet(name, description);
+      streets.addStreet(newStreet);
       setName('');
       setDescription('');
-    });
+      console.log("Улица добавлена");
+    } catch (error) {
+      console.error("Ошибка при добавлении улицы: ", error);
+    }
   };
 
   return (
@@ -90,10 +103,9 @@ const Admin = () => {
         </Form>
         <EditableTable onEdit={handleEdit} onDelete={handleDelete} />
       </Container>
-
       <Navigation />
     </div>
   );
-};
+});
 
 export default Admin;
