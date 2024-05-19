@@ -1,0 +1,31 @@
+/* customStyles.css */
+.dashed-border {
+    border: 2px dashed #ccc;
+    height: 100px;
+    transition: border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+#otvet{
+    height: 50px;
+}
+.dashed-border:hover {
+    border-color: #007bff;
+}
+
+.answer-input {
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
+button.btn-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+button.btn-link:hover {
+    text-decoration: underline;
+}

@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { Button, Container, Form, FormControl } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, Tab, Tabs } from 'react-bootstrap';
 import { createStreet, updateStreet, deleteStreet } from '../http/streetAPI';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../main';
 import EditableTable from '../components/EditableTable';
 import Navigation from '../components/Navigation';
 import { observer } from 'mobx-react-lite';
+import CreateQuiz from '../components/CreateQuiz/CreateQuiz';
+
 
 const Admin = observer(() => {
   const [name, setName] = useState('');
@@ -48,7 +50,7 @@ const Admin = observer(() => {
   const handleUpdate = async () => {
     try {
       const updatedStreet = await updateStreet(editingStreetId, name, description);
-      streets.updateStreet(updatedStreet); // Обновляем данные улицы
+      streets.updateStreet(updatedStreet);
       setName('');
       setDescription('');
       setEditMode(false);
@@ -72,36 +74,48 @@ const Admin = observer(() => {
 
   return (
     <div>
+
       <Container>
-        <h1>{editMode ? 'Редактировать улицу' : 'Добавить улицу'}</h1>
-        <Form className='mt-5'>
-          <FormControl
-            value={name}
-            onChange={e => setName(e.target.value)}
-            className='mt-3'
-            placeholder='Название улицы'
-          />
-          <FormControl
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            className='mt-3'
-            as='textarea'
-            rows={3}
-            placeholder='Описание улицы'
-          />
-          {editMode ? (
-            <>
-              <Button className='mt-3' onClick={handleUpdate}>Редактировать</Button>
-              <Button className='mt-3' style={{ marginLeft: '10px' }} onClick={handleCancel}>Отмена</Button>
-            </>
-          ) : (
-            <div className='d-flex justify-content-between'>
-              <Button className='mt-3' onClick={addStreet}>Добавить</Button>
-              <Button className='mt-3' onClick={logOut}>Выйти</Button>
-            </div>
-          )}
-        </Form>
-        <EditableTable onEdit={handleEdit} onDelete={handleDelete} />
+        <Tabs
+          defaultActiveKey="street"
+          id="uncontrolled-tab-example"
+          className="mb-3"
+        >
+          <Tab eventKey="street" title="Добавить улицу">
+            <h1>{editMode ? 'Редактировать улицу' : 'Добавить улицу'}</h1>
+            <Form className='mt-5'>
+              <FormControl
+                value={name}
+                onChange={e => setName(e.target.value)}
+                className='mt-3'
+                placeholder='Название улицы'
+              />
+              <FormControl
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                className='mt-3'
+                as='textarea'
+                rows={3}
+                placeholder='Описание улицы'
+              />
+              {editMode ? (
+                <>
+                  <Button className='mt-3' onClick={handleUpdate}>Редактировать</Button>
+                  <Button className='mt-3' style={{ marginLeft: '10px' }} onClick={handleCancel}>Отмена</Button>
+                </>
+              ) : (
+                <div className='d-flex justify-content-between'>
+                  <Button className='mt-3' onClick={addStreet}>Добавить</Button>
+                  <Button className='mt-3' onClick={logOut}>Выйти</Button>
+                </div>
+              )}
+            </Form>
+            <EditableTable onEdit={handleEdit} onDelete={handleDelete} />
+          </Tab>
+          <Tab eventKey="quiz" title="Добавить викторину">
+            <CreateQuiz />
+          </Tab>
+        </Tabs>
       </Container>
       <Navigation />
     </div>
