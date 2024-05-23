@@ -28,7 +28,6 @@ const CreateQuiz = () => {
 
     const handleSubmit = async () => {
         const newQuiz = await createQuiz(title, description, startTime, endTime);
-        // Обработка добавления вопросов и ответов к новому квизу
         questions.forEach(async (question) => {
             const newQuestion = await addQuestion(newQuiz.id, question.text, question.type);
             question.answers.forEach(async (answer) => {

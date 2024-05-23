@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import QuizList from '../components/QuizList'
 
 
 const Profile = () => {
@@ -38,12 +39,14 @@ const Profile = () => {
         <Card.Body>
           <Card.Title>{name}</Card.Title>
           <Card.Text>
-          <FontAwesomeIcon icon={faEnvelope} style={{marginRight: '1rem'}}/> {email}
+            <FontAwesomeIcon icon={faEnvelope} style={{ marginRight: '1rem' }} /> {email}
           </Card.Text>
         </Card.Body>
       </Card>
       <Button
-        onClick={() => logOut()}>Выйти</Button>
+        onClick={() => logOut()}>Выйти
+      </Button>
+      <QuizList/>
       <Navigation />
 
     </Container>
