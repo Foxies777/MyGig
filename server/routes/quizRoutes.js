@@ -12,5 +12,9 @@ router.get('/:id', quizController.getQuizById);
 router.get('/:quiz_id/questions', quizController.getQuestionsByQuizId);
 router.get('/question/:question_id/answers', quizController.getAnswersByQuestionId);
 router.post('/submit-quiz', quizController.submitQuiz); 
+router.get('/result/:user_quiz_id', quizController.getQuizResult);
+router.get('/user/:user_id/results', quizController.getUserQuizResults);
+
+
 
 module.exports = router;

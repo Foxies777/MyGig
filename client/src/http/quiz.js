@@ -17,42 +17,48 @@ export const addAnswer = async (question_id, text, is_correct) => {
     return data;
 };
 
-// Новый метод для получения всех викторин
 export const fetchQuizzes = async () => {
     const { data } = await $host.get('api/quiz/quizzes');
     return data;
 };
 
-// Новый метод для получения викторины по ID
 export const fetchQuizById = async (id) => {
     const { data } = await $host.get(`api/quiz/${id}`);
     return data;
 };
 
-// Новый метод для получения всех вопросов по ID викторины
 export const fetchQuestionsByQuizId = async (quiz_id) => {
     const { data } = await $host.get(`api/quiz/${quiz_id}/questions`);
     return data;
 };
 
-// Новый метод для получения всех ответов по ID вопроса
 export const fetchAnswersByQuestionId = async (question_id) => {
     const { data } = await $host.get(`api/quiz/question/${question_id}/answers`);
     return data;
 };
 
-// Метод для обновления викторины
 export const updateQuiz = async (id, title, description, start_time, end_time) => {
     const { data } = await $authhost.put(`api/quiz/update/${id}`, { title, description, start_time, end_time });
     return data;
 };
 
-// Метод для удаления викторины
 export const deleteQuiz = async (id) => {
     const { data } = await $authhost.delete(`api/quiz/delete/${id}`);
     return data;
 };
+
 export const submitQuiz = async (user_id, quiz_id, answers) => {
     const { data } = await $authhost.post('api/quiz/submit-quiz', { user_id, quiz_id, answers });
+    return data;
+};
+
+export const fetchQuizResult = async (user_quiz_id) => {
+    const { data } = await $authhost.get(`api/quiz/result/${user_quiz_id}`);
+    return data;
+};
+
+// Новый метод для получения результатов всех викторин пользователя
+export const fetchQuizResultsForUser = async (user_id) => {
+    const { data } = await $authhost.get(`api/quiz/user/${user_id}/results`);
     return data;
 };

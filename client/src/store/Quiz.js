@@ -1,6 +1,5 @@
-// store/quizStore.js
 import { makeAutoObservable } from 'mobx';
-import { fetchQuizzes, fetchQuizById, fetchQuestionsByQuizId, fetchAnswersByQuestionId, submitQuiz } from '../http/quiz';
+import { fetchQuizzes, fetchQuizById, fetchQuestionsByQuizId, fetchAnswersByQuestionId, submitQuiz, fetchQuizResultsForUser } from '../http/quiz';
 
 export default class QuizStore {
     constructor() {
@@ -9,6 +8,7 @@ export default class QuizStore {
         this._questions = [];
         this._answers = {};
         this._userAnswers = {};
+        this._quizResults = {}; // Новое свойство для хранения результатов викторин пользователя
         this._loading = false;
         makeAutoObservable(this);
     }
@@ -33,6 +33,15 @@ export default class QuizStore {
         this._userAnswers = userAnswers;
     }
 
+    setQuizResults(quizResults) {
+        // Преобразуем массив в объект для более удобного доступа по quiz_id
+        const resultsMap = quizResults.reduce((map, result) => {
+            map[result.quiz_id] = result;
+            return map;
+        }, {});
+        this._quizResults = resultsMap; // Установка результатов викторин
+    }
+
     setLoading(loading) {
         this._loading = loading;
     }
@@ -55,6 +64,10 @@ export default class QuizStore {
 
     get userAnswers() {
         return this._userAnswers;
+    }
+
+    get quizResults() {
+        return this._quizResults; // Получение результатов викторин
     }
 
     get loading() {
@@ -95,6 +108,20 @@ export default class QuizStore {
         }
     }
 
+    async loadQuizResultsForUser(userId) {
+        this.setLoading(true);
+        console.log('Loading quiz results for user:', userId); // Добавьте этот лог
+        try {
+            const quizResults = await fetchQuizResultsForUser(userId);
+            this.setQuizResults(quizResults);
+            console.log('Quiz results loaded:', quizResults); // Добавьте этот лог
+        } catch (error) {
+            console.error('Error loading quiz results:', error);
+        } finally {
+            this.setLoading(false);
+        }
+    }
+
     updateUserAnswer(questionId, answerId) {
         const question = this._questions.find(q => q.id === questionId);
         if (question.type === 'single') {
@@ -122,7 +149,9 @@ export default class QuizStore {
                     : answerIds.map(answer_id => ({ answer_id }));
             });
 
-            await submitQuiz(user_id, this._quiz.id, answers);
+            const result = await submitQuiz(user_id, this._quiz.id, answers);
+            // Устанавливаем результат викторины после отправки
+            this._quizResults[this._quiz.id] = result; // Обновляем результат в quizResults
             // Очистить ответы пользователя после отправки
             this.setUserAnswers({});
         } catch (error) {

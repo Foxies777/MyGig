@@ -96,48 +96,143 @@ class QuizController {
     async submitQuiz(req, res) {
         try {
             const { user_id, quiz_id, answers } = req.body;
+            console.log('Received data:', { user_id, quiz_id, answers });
+
             const quiz = await Quiz.findByPk(quiz_id);
             if (!quiz) {
+                console.log('Quiz not found:', quiz_id);
                 return res.status(404).json({ message: 'Викторина не найдена' });
             }
-    
+            console.log('Quiz found:', quiz);
+
             const userQuiz = await User_Quiz.create({
                 user_id,
                 quiz_id,
                 score: 0,
                 completion_time: new Date(),
             });
-    
+            console.log('User quiz created:', userQuiz);
+
             let totalScore = 0;
-    
+
+            // Собираем ответы пользователя по каждому вопросу
+            const userAnswersByQuestion = {};
             for (const answer of answers) {
-                await User_Quiz_Answer.create({
-                    user_quiz_id: userQuiz.id,
-                    answer_id: answer.answer_id,
-                });
-    
                 const userAnswer = await Answer.findByPk(answer.answer_id);
-                const question = await Question.findByPk(userAnswer.question_id);
+                if (!userAnswer) continue;
+                if (!userAnswersByQuestion[userAnswer.question_id]) {
+                    userAnswersByQuestion[userAnswer.question_id] = [];
+                }
+                userAnswersByQuestion[userAnswer.question_id].push(userAnswer);
+            }
+
+            for (const questionId in userAnswersByQuestion) {
+                const userAnswers = userAnswersByQuestion[questionId];
+                const question = await Question.findByPk(questionId);
+                console.log('Question found:', question);
+
                 const correctAnswers = await Answer.findAll({
-                    where: { question_id: userAnswer.question_id, is_correct: true }
+                    where: { question_id: questionId, is_correct: true }
                 });
-    
+                console.log('Correct answers found:', correctAnswers);
+
+                const correctAnswerIds = correctAnswers.map(ca => ca.id);
+                const userCorrectAnswerIds = userAnswers
+                    .filter(ua => ua.is_correct)
+                    .map(ua => ua.id);
+
+                console.log('Correct answer IDs:', correctAnswerIds);
+                console.log('User correct answer IDs:', userCorrectAnswerIds);
+
+                const correctCount = userCorrectAnswerIds.length;
+                const totalCorrectAnswers = correctAnswerIds.length;
+
+                console.log('Correct count:', correctCount);
+                console.log('Total correct answers:', totalCorrectAnswers);
+
+                const partialScore = correctCount / totalCorrectAnswers;
+
                 if (question.type === 'single') {
-                    if (correctAnswers.length === 1 && correctAnswers[0].id === userAnswer.id) {
+                    if (correctCount === 1) {
                         totalScore += 1;
+                        console.log('Single question correct answer. Total score:', totalScore);
                     }
                 } else if (question.type === 'multiple') {
-                    const userCorrectAnswers = answers.filter(a => a.question_id === question.id && correctAnswers.map(ca => ca.id).includes(a.answer_id)).length;
-                    totalScore += userCorrectAnswers / correctAnswers.length;
+                    totalScore += partialScore;
+                    console.log('Partial correct multiple answers. Partial score:', partialScore, 'Total score:', totalScore);
                 }
             }
-    
+
             await userQuiz.update({ score: totalScore });
-    
+            console.log('User quiz updated with score:', totalScore);
+
             return res.json({ message: 'Ответы пользователя успешно записаны', score: totalScore });
         } catch (error) {
             console.error('Error submitting quiz:', error);
             res.status(500).json({ message: 'Ошибка при записи ответов пользователя', error });
+        }
+    }
+
+    async getQuizResult(req, res) {
+        try {
+            const { user_quiz_id } = req.params;
+
+            // Получаем результат викторины для конкретного пользователя
+            const userQuiz = await User_Quiz.findByPk(user_quiz_id, {
+                include: [{
+                    model: Quiz,
+                    include: [{
+                        model: Question,
+                        include: [Answer]
+                    }]
+                }]
+            });
+
+            if (!userQuiz) {
+                return res.status(404).json({ message: 'Результат викторины не найден' });
+            }
+
+            const totalQuestions = userQuiz.quiz.questions ? userQuiz.quiz.questions.length : 0;
+            const totalPossibleScore = totalQuestions;
+
+            return res.json({
+                message: 'Результат викторины получен',
+                score: userQuiz.score,
+                totalPossibleScore: totalPossibleScore
+            });
+        } catch (error) {
+            console.error('Error fetching quiz result:', error);
+            res.status(500).json({ message: 'Ошибка при получении результата викторины', error });
+        }
+    }
+
+    async getUserQuizResults(req, res) {
+        try {
+            const { user_id } = req.params;
+            const userQuizzes = await User_Quiz.findAll({ where: { user_id } });
+
+            const results = await Promise.all(userQuizzes.map(async userQuiz => {
+                const quiz = await Quiz.findByPk(userQuiz.quiz_id, {
+                    include: [{
+                        model: Question,
+                        include: [Answer]
+                    }]
+                });
+
+                const totalQuestions = quiz.questions ? quiz.questions.length : 0;
+
+                return {
+                    quiz_id: userQuiz.quiz_id,
+                    title: quiz.title,
+                    score: userQuiz.score,
+                    total: totalQuestions
+                };
+            }));
+
+            return res.json(results);
+        } catch (error) {
+            console.error('Error fetching user quiz results:', error);
+            res.status(500).json({ message: 'Ошибка при получении результатов викторин пользователя', error });
         }
     }
 }

@@ -57,9 +57,9 @@ const User_Quiz = sequelize.define('user_quiz', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.INTEGER, allowNull: false },
     quiz_id: { type: DataTypes.INTEGER, allowNull: false },
-    score: { type: DataTypes.INTEGER, allowNull: false },
+    score: { type: DataTypes.FLOAT, allowNull: false },
     completion_time: { type: DataTypes.DATE, allowNull: false },
-})
+});
 
 // User_Quiz_Answer Model
 const User_Quiz_Answer = sequelize.define('user_quiz_answer', {
@@ -87,9 +87,6 @@ User_Quiz.belongsTo(User)
 User_Quiz.hasMany(User_Quiz_Answer)
 User_Quiz_Answer.belongsTo(User_Quiz)
 
-sequelize.sync({ alter: true }).then(() => {
-    console.log("Database & tables created!");
-});
 
 module.exports = {
     User,
