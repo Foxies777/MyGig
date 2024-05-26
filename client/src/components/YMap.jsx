@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { YMaps, GeolocationControl, Map, ZoomControl, Placemark } from '@pbe/react-yandex-maps';
-import StreetModal from './StreetModal'; 
-import { searchStreetsByName } from '../http/streetAPI'; 
+import StreetModal from './StreetModal';
+import { searchStreetsByName } from '../http/streetAPI';
 
 const YMap = () => {
     const [streetData, setStreetData] = useState(null);
     const [street, setStreet] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [streetInfo, setStreetInfo] = useState(null);
-
     const handleMapClick = async (e) => {
         const coords = e.get('coords');
 
@@ -19,7 +18,7 @@ const YMap = () => {
                 if (data.status.code === 200 && data.results.length > 0) {
                     const currentLocation = data.results[0].formatted;
                     const street = currentLocation.split(',')[0].trim().replace(/Улица\s+/i, '');
-                    
+                    console.log("Street: " + street);
                     setStreet(street);
                     setShowModal(true);
                     fetchStreetInfo(street);
@@ -28,7 +27,7 @@ const YMap = () => {
                     console.log("Reverse geolocation request failed.");
                 }
             });
-        
+
         setStreetData(data);
     };
 
@@ -47,7 +46,7 @@ const YMap = () => {
     };
 
     console.log(street);
-    console.log(streetInfo);
+    console.log("streetInfo: ", streetInfo);
 
     return (
         <YMaps

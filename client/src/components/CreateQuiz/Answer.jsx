@@ -32,7 +32,7 @@ const Answer = ({ questionIndex, answerIndex, answer, updateAnswer, removeAnswer
                 />
             </Col>
             <Col xs={2} sm={2} className="d-flex justify-content-end">
-                <Button variant="link" onClick={() => removeAnswer(answerIndex)}>
+                <Button variant="danger" onClick={() => removeAnswer(answerIndex)}>
                     <FaTrashAlt />
                 </Button>
             </Col>

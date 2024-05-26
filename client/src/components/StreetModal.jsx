@@ -1,7 +1,9 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { login } from '../http/userAPI';
 
 const StreetModal = ({ show, onHide, streetName, streetInfo }) => {
+    
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>

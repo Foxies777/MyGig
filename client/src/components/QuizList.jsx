@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Card, Button } from 'react-bootstrap';
+import { Container, Card, Button, Tabs, Tab } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../main';
 import { jwtDecode } from 'jwt-decode';
@@ -8,6 +8,8 @@ import { jwtDecode } from 'jwt-decode';
 const QuizList = observer(() => {
     const { quizStore } = useContext(Context);
     const [id, setId] = useState(null);
+    const [activeQuizzes, setActiveQuizzes] = useState([]);
+    const [inactiveQuizzes, setInactiveQuizzes] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -27,36 +29,69 @@ const QuizList = observer(() => {
         }
     }, [id, quizStore]);
 
+    useEffect(() => {
+        if (quizStore.quizzes.length > 0) {
+            const now = new Date();
+            const active = quizStore.quizzes.filter(quiz => new Date(quiz.end_time) > now);
+            const inactive = quizStore.quizzes.filter(quiz => new Date(quiz.end_time) <= now);
+            setActiveQuizzes(active);
+            setInactiveQuizzes(inactive);
+        }
+    }, [quizStore.quizzes]);
+
     if (quizStore.loading) {
         return <div>Загрузка...</div>;
     }
 
-    console.log('Quiz results:', quizStore.quizResults); // Лог для проверки результатов викторин
-
     return (
         <Container>
             <h1 className="mt-4">Доступные Викторины</h1>
-            {quizStore.quizzes.map((quiz) => {
-                const userResult = quizStore.quizResults[quiz.id];
-                console.log('User result for quiz', quiz.id, ':', userResult); // Лог для проверки результата пользователя для конкретного квиза
-                return (
-                    <Card className="mt-4" key={quiz.id}>
-                        <Card.Body>
-                            <Card.Title>{quiz.title}</Card.Title>
-                            <Card.Text>{quiz.description}</Card.Text>
-                            {userResult ? (
-                                <Card.Text>
-                                    Ваш результат: {userResult.score} баллов
-                                </Card.Text>
-                            ) : (
-                                <Link to={`/quiz/${quiz.id}`}>
-                                    <Button variant="primary">Пройти Викторину</Button>
-                                </Link>
-                            )}
-                        </Card.Body>
-                    </Card>
-                );
-            })}
+            <Tabs defaultActiveKey="active" id="quiz-tabs" className="mb-3">
+                <Tab eventKey="active" title="Активные Викторины">
+                    {activeQuizzes.length !== 0 ? activeQuizzes.map((quiz) => {
+                        const userResult = quizStore.quizResults[quiz.id];
+                        return (
+                            <Card className="mt-4" key={quiz.id}>
+                                <Card.Body>
+                                    <Card.Title>{quiz.title}</Card.Title>
+                                    <Card.Text>{quiz.description}</Card.Text>
+                                    {userResult ? (
+                                        <Card.Text>
+                                            Ваш результат: {userResult.score} / {userResult.totalPossibleScore} баллов
+                                        </Card.Text>
+                                    ) : (
+                                        <Link to={`/quiz/${quiz.id}`}>
+                                            <Button variant="primary">Пройти Викторину</Button>
+                                        </Link>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        );
+                    }) : (
+                        <>Викторин нет</>
+                    )}
+                </Tab>
+                <Tab eventKey="inactive" title="Неактивные Викторины">
+                    {inactiveQuizzes.map((quiz) => {
+                        const userResult = quizStore.quizResults[quiz.id];
+                        return (
+                            <Card className="mt-4" key={quiz.id}>
+                                <Card.Body>
+                                    <Card.Title>{quiz.title}</Card.Title>
+                                    <Card.Text>{quiz.description}</Card.Text>
+                                    {userResult ? (
+                                        <Card.Text>
+                                            Ваш результат: {userResult.score} / {userResult.totalPossibleScore} баллов
+                                        </Card.Text>
+                                    ) : (
+                                        <Card.Text>Викторина завершена</Card.Text>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        );
+                    })}
+                </Tab>
+            </Tabs>
         </Container>
     );
 });

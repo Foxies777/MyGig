@@ -75,11 +75,11 @@ Notification.belongsTo(User)
 Street.hasMany(Notification)
 Notification.belongsTo(Street)
 
-Quiz.hasMany(Question)
-Question.belongsTo(Quiz)
+Quiz.hasMany(Question, { foreignKey: 'quiz_id' });
+Question.belongsTo(Quiz, { foreignKey: 'quiz_id' });
 
-Question.hasMany(Answer)
-Answer.belongsTo(Question)
+Question.hasMany(Answer, { foreignKey: 'question_id' });
+Answer.belongsTo(Question, { foreignKey: 'question_id' });
 
 User.hasMany(User_Quiz)
 User_Quiz.belongsTo(User)
