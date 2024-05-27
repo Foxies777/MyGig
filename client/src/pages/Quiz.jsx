@@ -1,4 +1,3 @@
-// pages/Quiz.js
 import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Card, Button, Form, Modal } from 'react-bootstrap';
@@ -10,9 +9,8 @@ import Navigation from '../components/Navigation';
 const Quiz = observer(() => {
     const { quizId } = useParams();
     const navigate = useNavigate();
-    const { quizStore, user } = useContext(Context);
-    const [id, setId] = useState('');
-    const [isCompleted, setIsCompleted] = useState(false);
+    const { quizStore } = useContext(Context);
+    const [userId, setUserId] = useState('');
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -23,26 +21,30 @@ const Quiz = observer(() => {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwtDecode(token);
-            setId(decodedToken.id);
+            setUserId(decodedToken.id);
         }
     }, []);
 
     useEffect(() => {
-        if (id) {
-            const userQuizStatus = quizStore.loadQuizResultsForUser(id);
-            if (userQuizStatus !== undefined) {
-                setIsCompleted(true);
-                setShowModal(true);
-            }
+        if (userId) {
+            const checkUserQuizStatus = async () => {
+                const quizResults = await quizStore.loadQuizResultsForUser(userId);
+                console.log(quizResults);
+                const userQuizStatus = quizResults.find(result => result.quiz_id === parseInt(quizId, 10));
+                if (userQuizStatus) {
+                    setShowModal(true);
+                }
+            };
+            checkUserQuizStatus();
         }
-    }, [id, quizStore, quizId]);
+    }, [userId, quizStore, quizId]);
 
     const handleAnswerChange = (questionId, answerId) => {
         quizStore.updateUserAnswer(questionId, answerId);
     };
 
     const handleSubmit = async () => {
-        await quizStore.submitQuiz(id);
+        await quizStore.submitQuiz(userId);
         navigate('/profile');
     };
 

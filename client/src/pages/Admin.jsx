@@ -7,7 +7,7 @@ import EditableTable from '../components/EditableTable';
 import Navigation from '../components/Navigation';
 import { observer } from 'mobx-react-lite';
 import CreateQuiz from '../components/CreateQuiz/CreateQuiz';
-
+import AdminQuizList from '../components/AdminQuizList'
 
 const Admin = observer(() => {
   const [name, setName] = useState('');
@@ -114,6 +114,9 @@ const Admin = observer(() => {
           </Tab>
           <Tab eventKey="quiz" title="Добавить викторину">
             <CreateQuiz />
+          </Tab>
+          <Tab eventKey="allQuiz" title="Все викторины">
+              <AdminQuizList />
           </Tab>
         </Tabs>
       </Container>

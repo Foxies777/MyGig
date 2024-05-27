@@ -81,11 +81,11 @@ Question.belongsTo(Quiz, { foreignKey: 'quiz_id' });
 Question.hasMany(Answer, { foreignKey: 'question_id' });
 Answer.belongsTo(Question, { foreignKey: 'question_id' });
 
-User.hasMany(User_Quiz)
-User_Quiz.belongsTo(User)
+User.hasMany(User_Quiz, { foreignKey: 'user_id' });
+User_Quiz.belongsTo(User, { foreignKey: 'user_id' });
 
-User_Quiz.hasMany(User_Quiz_Answer)
-User_Quiz_Answer.belongsTo(User_Quiz)
+Quiz.hasMany(User_Quiz, { foreignKey: 'quiz_id' });
+User_Quiz.belongsTo(Quiz, { foreignKey: 'quiz_id' });
 
 
 module.exports = {

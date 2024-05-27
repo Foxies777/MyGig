@@ -1,9 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { login } from '../http/userAPI';
 
 const StreetModal = ({ show, onHide, streetName, streetInfo }) => {
-    
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
@@ -12,7 +10,11 @@ const StreetModal = ({ show, onHide, streetName, streetInfo }) => {
             <Modal.Body>
                 {streetInfo ? (
                     <div>
-                        <p>{streetInfo[0].description}</p>
+                        {streetInfo.length > 0 ? (
+                            <p>{streetInfo[0].description}</p>
+                        ) : (
+                            <p>Информация об улице отсутствует.</p>
+                        )}
                     </div>
                 ) : (
                     <p>Loading...</p>

@@ -1,3 +1,4 @@
+// quiz.js
 import { $authhost, $host } from "./index";
 
 export const createQuiz = async (title, description, start_time, end_time) => {
@@ -60,5 +61,9 @@ export const fetchQuizResult = async (user_quiz_id) => {
 // Новый метод для получения результатов всех викторин пользователя
 export const fetchQuizResultsForUser = async (user_id) => {
     const { data } = await $authhost.get(`api/quiz/user/${user_id}/results`);
+    return data;
+};
+export const fetchUsersByQuizId = async (quizId) => {
+    const { data } = await $authhost.get(`api/quiz/${quizId}/users`);
     return data;
 };

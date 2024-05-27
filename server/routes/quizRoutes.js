@@ -14,6 +14,8 @@ router.get('/question/:question_id/answers', quizController.getAnswersByQuestion
 router.post('/submit-quiz', quizController.submitQuiz); 
 router.get('/result/:user_quiz_id', quizController.getQuizResult);
 router.get('/user/:user_id/results', quizController.getUserQuizResults);
+router.get('/:quizId/users', quizController.getUsersByQuizId);
+
 
 
 

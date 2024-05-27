@@ -4,7 +4,8 @@ import Notifications from "./pages/Notifications";
 import PageMap from "./pages/PageMap";
 import Profile from "./pages/Profile";
 import Quiz from "./pages/Quiz";
-import { ADMIN_ROUTE, LOGIN_ROUTE, MAP_ROUTE, NOTIFICATION_ROUTE, REGISTRATION_ROUTE, PROFILE_ROUTE, QUIZ_ROUTE } from "./utils/consts";
+import QuizStats from "./pages/QuizStats";
+import { ADMIN_ROUTE, LOGIN_ROUTE, MAP_ROUTE, NOTIFICATION_ROUTE, REGISTRATION_ROUTE, PROFILE_ROUTE, QUIZ_ROUTE, STATS_ROUTE } from "./utils/consts";
 
 export const authRoutes = [
     {
@@ -22,8 +23,12 @@ export const authRoutes = [
     {
         path: QUIZ_ROUTE,
         Component: Quiz
+    },
+    {
+        path: STATS_ROUTE,
+        Component: QuizStats
     }
-]
+];
 
 export const publicRoutes = [
     {
@@ -37,5 +42,5 @@ export const publicRoutes = [
     {
         path: REGISTRATION_ROUTE,
         Component: Auth
-    },
-]
+    }
+];

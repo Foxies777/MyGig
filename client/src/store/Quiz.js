@@ -1,5 +1,7 @@
+// Обновленный QuizStore.js
+
 import { makeAutoObservable } from 'mobx';
-import { fetchQuizzes, fetchQuizById, fetchQuestionsByQuizId, fetchAnswersByQuestionId, submitQuiz, fetchQuizResultsForUser } from '../http/quiz';
+import { fetchQuizzes, fetchQuizById, fetchQuestionsByQuizId, fetchAnswersByQuestionId, submitQuiz, fetchQuizResultsForUser, fetchUsersByQuizId } from '../http/quiz';
 
 export default class QuizStore {
     constructor() {
@@ -10,6 +12,7 @@ export default class QuizStore {
         this._userAnswers = {};
         this._quizResults = {};
         this._loading = false;
+        this._usersByQuiz = {};
         makeAutoObservable(this);
     }
 
@@ -45,6 +48,10 @@ export default class QuizStore {
         this._loading = loading;
     }
 
+    setUsersByQuiz(quizId, users) {
+        this._usersByQuiz[quizId] = users;
+    }
+
     get quizzes() {
         return this._quizzes;
     }
@@ -71,6 +78,10 @@ export default class QuizStore {
 
     get loading() {
         return this._loading;
+    }
+
+    get usersByQuiz() {
+        return this._usersByQuiz;
     }
 
     async loadQuizzes() {
@@ -112,6 +123,8 @@ export default class QuizStore {
         try {
             const quizResults = await fetchQuizResultsForUser(userId);
             this.setQuizResults(quizResults);
+            // Возвращаем результаты для конкретного пользователя
+            return quizResults;
         } catch (error) {
             console.error('Error loading quiz results:', error);
         } finally {
@@ -119,6 +132,17 @@ export default class QuizStore {
         }
     }
 
+    async loadUsersByQuizId(quizId) {
+        this.setLoading(true);
+        try {
+            const users = await fetchUsersByQuizId(quizId);
+            this.setUsersByQuiz(quizId, users);
+        } catch (error) {
+            console.error('Error loading users by quiz ID:', error);
+        } finally {
+            this.setLoading(false);
+        }
+    }
     updateUserAnswer(questionId, answerId) {
         const question = this._questions.find(q => q.id === questionId);
         if (question.type === 'single') {

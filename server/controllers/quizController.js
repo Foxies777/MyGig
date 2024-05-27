@@ -1,4 +1,4 @@
-const { Quiz, Question, Answer, User_Quiz, User_Quiz_Answer } = require('../models/models');
+const { User, Quiz, Question, Answer, User_Quiz, User_Quiz_Answer } = require('../models/models');
 
 class QuizController {
     async createQuiz(req, res) {
@@ -195,9 +195,9 @@ class QuizController {
             console.log('Fetching user quiz results for user_id:', req.params.user_id);
             const { user_id } = req.params;
             const userQuizzes = await User_Quiz.findAll({ where: { user_id } });
-        
+
             const results = await Promise.all(userQuizzes.map(async userQuiz => {
-    
+
                 // Fetch the quiz with associated questions and answers
                 const quiz = await Quiz.findByPk(userQuiz.quiz_id, {
                     include: [{
@@ -208,23 +208,24 @@ class QuizController {
                 if (!quiz) {
                     return null;
                 }
-                   
+
                 const totalQuestions = quiz.questions ? quiz.questions.length : 0;
                 let totalPossibleScore = 0;
-    
+
                 for (const question of quiz.questions) {
                     const correctAnswersCount = question.answers.filter(answer => answer.is_correct).length;
                     totalPossibleScore += correctAnswersCount;
                 }
-    
+
                 return {
                     quiz_id: userQuiz.quiz_id,
                     title: quiz.title,
                     score: userQuiz.score,
-                    totalPossibleScore: totalPossibleScore 
+                    totalPossibleScore: totalPossibleScore
                 };
             }));
-    
+            console.log(results)
+
             return res.json(results.filter(result => result !== null));
         } catch (error) {
             console.error('Error fetching user quiz results:', error);
@@ -232,8 +233,23 @@ class QuizController {
         }
     }
     
-    
-    
+    async getUsersByQuizId(req, res) {
+        try {
+            const { quizId } = req.params;
+            const userQuizzes = await User_Quiz.findAll({ where: { quiz_id: quizId }, include: [User] });
+
+            const results = userQuizzes.map(userQuiz => ({
+                id: userQuiz.user.id,
+                login: userQuiz.user.login,
+                email: userQuiz.user.email,
+                score: userQuiz.score,
+            }));
+            return res.json(results);
+        } catch (error) {
+            console.error('Error fetching users by quiz ID:', error);
+            res.status(500).json({ message: 'Ошибка при получении пользователей по ID викторины', error });
+        }
+    }
 }
 
 module.exports = new QuizController();

@@ -1,3 +1,4 @@
+// components/AppRouter.js
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { authRoutes, publicRoutes } from '../routes';
@@ -25,6 +26,6 @@ const AppRouter = observer(() => {
             ))}
         </Routes>
     );
-})
+});
 
 export default AppRouter;
