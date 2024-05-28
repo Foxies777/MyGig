@@ -27,11 +27,11 @@ function Map() {
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.id;
     const cleanStreetName = streetName.split(',')[0].trim();
-
+    setStreet(cleanStreetName)
     console.log(cleanStreetName.split(' ')[1]);
     try {
       const matchingStreet = streets.streets.find(street => street.street_name === cleanStreetName.split(' ')[1]);
-      setStreet(matchingStreet)
+      
       if (!matchingStreet) {
         console.error('Улица не найдена');
         return;
@@ -103,7 +103,7 @@ function Map() {
 
   return (
     <div className="Map">
-      {street}
+      <b>{street}</b><br/>
       {location ? <>Your location: {location}</> : null}
     </div>
   );
