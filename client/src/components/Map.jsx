@@ -12,11 +12,15 @@ function Map() {
   const [lastStreet, setLastStreet] = useState('');
   const [street, setStreet] = useState('');
 
-  const { streets } = useContext(Context)
+  const { streets } = useContext(Context);
 
   useEffect(() => {
-    fetchStreet().then(data => streets.setStreets(data))
-  }, [])
+    fetchStreet().then(data => streets.setStreets(data));
+  }, [streets]);
+
+  const cleanStreetName = (name) => {
+    return name.replace(/улица\s*/i, '').trim();
+  };
 
   const sendNotification = useCallback(async (streetName) => {
     const token = localStorage.getItem('token');
@@ -26,11 +30,11 @@ function Map() {
     }
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.id;
-    const cleanStreetName = streetName.split(',')[0].trim();
-    setStreet(cleanStreetName)
-    console.log(cleanStreetName.split(' ')[1]);
+    const cleanName = cleanStreetName(streetName.split(',')[0]);
+    setStreet(cleanName);
+    
     try {
-      const matchingStreet = streets.streets.find(street => street.street_name === cleanStreetName.split(' ')[1]);
+      const matchingStreet = streets.streets.find(street => cleanStreetName(street.street_name) === cleanName);
       
       if (!matchingStreet) {
         console.error('Улица не найдена');
@@ -42,8 +46,7 @@ function Map() {
     } catch (error) {
       console.error('Ошибка при отправке уведомления:', error);
     }
-  }, []);
-
+  }, [streets]);
 
   const getLocationInfo = useCallback((latitude, longitude) => {
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${APIkey}`;
@@ -63,7 +66,6 @@ function Map() {
       })
       .catch((error) => console.error(error));
   }, [lastStreet, sendNotification]);
-
 
   const options = {
     enableHighAccuracy: true,
