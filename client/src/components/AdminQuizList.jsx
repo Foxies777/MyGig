@@ -43,7 +43,7 @@ const AdminQuizList = observer(() => {
                             <Card.Body className="d-flex flex-column">
                                 <Card.Title>{quiz.title}</Card.Title>
                                 <Card.Text className="flex-grow-1">{quiz.description}</Card.Text>
-                                <Link to={`/admin/quiz/${quiz.id}`}>
+                                <Link to={`/quiz/stats/${quiz.id}`}>
                                     <Button variant="primary">Статистика</Button>
                                 </Link>
                             </Card.Body>

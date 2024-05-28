@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Card, Button, Tabs, Tab } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
+import Countdown from 'react-countdown';
 import { Context } from '../main';
 import { jwtDecode } from 'jwt-decode';
 
@@ -55,10 +56,17 @@ const QuizList = observer(() => {
                                 <Card.Body>
                                     <Card.Title>{quiz.title}</Card.Title>
                                     <Card.Text>{quiz.description}</Card.Text>
-                                    {userResult ? (
+                                    <Card.Text>
+                                        Время до окончания: <Countdown date={new Date(quiz.end_time)} />
+                                    </Card.Text>
+                                    {userResult ? (<>
                                         <Card.Text>
                                             Ваш результат: {userResult.score} / {userResult.totalPossibleScore} баллов
                                         </Card.Text>
+                                        <Link to={`/quiz/stats/${quiz.id}`}>
+                                            <Button variant="primary">Статистика</Button>
+                                        </Link>
+                                    </>
                                     ) : (
                                         <Link to={`/quiz/${quiz.id}`}>
                                             <Button variant="primary">Пройти Викторину</Button>
@@ -86,6 +94,9 @@ const QuizList = observer(() => {
                                     ) : (
                                         <Card.Text>Викторина завершена</Card.Text>
                                     )}
+                                    <Link to={`/quiz/stats/${quiz.id}`}>
+                                        <Button variant="primary">Статистика</Button>
+                                    </Link>
                                 </Card.Body>
                             </Card>
                         );

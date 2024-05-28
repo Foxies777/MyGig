@@ -10,6 +10,7 @@ const APIkey = "d798438582cb4b7eb243adca60f3bc61";
 function Map() {
   const [location, setLocation] = useState();
   const [lastStreet, setLastStreet] = useState('');
+  const [street, setStreet] = useState('');
 
   const { streets } = useContext(Context)
 
@@ -23,14 +24,14 @@ function Map() {
       console.error('Нет токена аутентификации');
       return;
     }
-
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.id;
     const cleanStreetName = streetName.split(',')[0].trim();
-    console.log(streetName);
+
     console.log(cleanStreetName.split(' ')[1]);
     try {
       const matchingStreet = streets.streets.find(street => street.street_name === cleanStreetName.split(' ')[1]);
+      setStreet(matchingStreet)
       if (!matchingStreet) {
         console.error('Улица не найдена');
         return;
@@ -102,6 +103,7 @@ function Map() {
 
   return (
     <div className="Map">
+      {street}
       {location ? <>Your location: {location}</> : null}
     </div>
   );

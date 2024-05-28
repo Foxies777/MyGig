@@ -6,4 +6,4 @@ export const REGISTRATION_ROUTE = '/registration';
 export const NOTIFICATION_ROUTE = '/notification';
 export const MAP_ROUTE = '/';
 export const QUIZ_ROUTE = '/quiz/:quizId';
-export const STATS_ROUTE = '/admin/quiz/:quizId';
+export const STATS_ROUTE = '/quiz/stats/:quizId';
