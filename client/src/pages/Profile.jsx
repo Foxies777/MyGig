@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import QuizList from '../components/QuizList'
+import QuizList from './QuizList'
 
 
 const Profile = () => {
@@ -46,7 +46,6 @@ const Profile = () => {
       <Button
         onClick={() => logOut()}>Выйти
       </Button>
-      <QuizList/>
       <Navigation />
 
     </Container>

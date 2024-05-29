@@ -38,7 +38,6 @@ class StreetController {
             return res.send('Update Error')
         }
     }
-    // В streetController.js
 
     async delete(req, res) {
         try {

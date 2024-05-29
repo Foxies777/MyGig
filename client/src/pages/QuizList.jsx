@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import Countdown from 'react-countdown';
 import { Context } from '../main';
 import { jwtDecode } from 'jwt-decode';
+import Navigation from '../components/Navigation';
 
 const QuizList = observer(() => {
     const { quizStore } = useContext(Context);
@@ -103,6 +104,7 @@ const QuizList = observer(() => {
                     })}
                 </Tab>
             </Tabs>
+            <Navigation />
         </Container>
     );
 });
